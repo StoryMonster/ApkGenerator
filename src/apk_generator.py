@@ -4,6 +4,7 @@ from tkinter.filedialog import askdirectory
 from log_panel import LogPanel
 from control_panel import ControlPanel
 from info_panel import InfoPanel
+from generate_apk_procedure import GenerateApkProcedure
 import os
 
 
@@ -58,7 +59,7 @@ class ApkGenerator(Tk):
         if not is_android_project_valid(self.project_directory):
             messagebox.showerror(title="invalid project", message="Your android project cannot be compiled")
             return
-        ## configure other attributes
+        self._configure_project_information()
 
     def _apply_context(self):
         for tool_name in self.context["tools"]:
@@ -76,13 +77,14 @@ class ApkGenerator(Tk):
         self.context["project"]["project_directory"] = self.project_directory
 
     def _handle_generate_apk_file(self):
-        self.log_panel.append_line("clicked generate")
+        proc = GenerateApkProcedure(self.context, self.log_panel)
+        proc.run()
 
     def _handle_install_on_device(self):
-        self.log_panel.append_line("clicked install on device")
+        pass
 
     def _handle_install_on_emulator(self):
-        self.log_panel.append_line("clicked install on emulator")
+        pass
 
     def _handle_uninstall_app(self):
-        self.log_panel.append_line("clicked uninstall app")
+        pass

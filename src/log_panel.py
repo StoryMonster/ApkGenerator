@@ -30,8 +30,12 @@ class LogPanel(Frame):
         self.log_area.delete("1.0", "end")
         self._see_at_end()
 
-    def append_line(self, line):
+    def write_line(self, line):
         self.log_area.insert("end", "\n")
         self.log_area.insert("end", line)
+        self._see_at_end()
+
+    def write(self, text):
+        self.log_area.insert("end", text)
         self._see_at_end()
 

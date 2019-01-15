@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <ApkGenerator>
   <tools>
-    <javac>C:\Program Files\Java\jdk1.8.0_111\bin\javac.exe</javac>
-    <keytool>C:\Program Files\Java\jdk1.8.0_111\bin\keytool.exe</keytool>
-    <jarsigner>C:\Program Files\Java\jdk1.8.0_111\bin\jarsigner.exe</jarsigner>
-    <javadoc>C:\Program Files\Java\jdk1.8.0_111\bin\javadoc.exe</javadoc>
-    <adb></adb>
-    <aapt></aapt>
-    <zipalign></zipalign>
-    <dx></dx>
-    <android.jar></android.jar>
+    <javac>C:\Program Files\Java\jdk1.8.0_191\bin\javac.exe</javac>
+    <keytool>C:\Program Files\Java\jdk1.8.0_191\bin\keytool.exe</keytool>
+    <jarsigner>C:\Program Files\Java\jdk1.8.0_191\bin\jarsigner.exe</jarsigner>
+    <javadoc>C:\Program Files\Java\jdk1.8.0_191\bin\javadoc.exe</javadoc>
+    <adb>C:\Program Files\AndroidSDK\platform-tools\adb.exe</adb>
+    <aapt>C:\Program Files\AndroidSDK\build-tools\28.0.3\aapt.exe</aapt>
+    <zipalign>C:\Program Files\AndroidSDK\build-tools\28.0.3\zipalign.exe</zipalign>
+    <dx>C:\Program Files\AndroidSDK\build-tools\28.0.3\dx.bat</dx>
+    <android.jar>C:\Program Files\AndroidSDK\platforms\android-28\android.jar</android.jar>
   </tools>
 </ApkGenerator>
