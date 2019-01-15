@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ApkGenerator>
+  <tools>
+    <javac>C:\Program Files\Java\jdk1.8.0_111\bin\javac.exe</javac>
+    <keytool>C:\Program Files\Java\jdk1.8.0_111\bin\keytool.exe</keytool>
+    <jarsigner>C:\Program Files\Java\jdk1.8.0_111\bin\jarsigner.exe</jarsigner>
+    <javadoc>C:\Program Files\Java\jdk1.8.0_111\bin\javadoc.exe</javadoc>
+    <adb></adb>
+    <aapt></aapt>
+    <zipalign></zipalign>
+    <dx></dx>
+    <android.jar></android.jar>
+  </tools>
+</ApkGenerator>
