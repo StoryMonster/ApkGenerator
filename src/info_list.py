@@ -1,17 +1,19 @@
 from tkinter import Listbox, Scrollbar, messagebox
 from tkinter import VERTICAL, RIGHT, Y, W, X, SINGLE, TOP, BOTH, DISABLED, NORMAL
+from tkinter.font import Font
 from env_item import EnvItem
 from info_list_popup_dialog import InfoListPopupDialog
+
 
 class InfoList(Listbox):
     def __init__(self, master=None, **cwt):
         y_scrollar_bar = Scrollbar(master, orient=VERTICAL)
         y_scrollar_bar.pack(side=RIGHT, fill=Y)
-        super().__init__(master=master, yscrollcommand=y_scrollar_bar.set, bd=5, selectmode=SINGLE, exportselection=False, **cwt)
+        tkfont = Font(family="Times New Roman",size=10, weight="normal")
+        super().__init__(master=master, yscrollcommand=y_scrollar_bar.set, bd=5, selectmode=SINGLE, exportselection=False, font=tkfont, **cwt)
         y_scrollar_bar.config(command=self.yview)
         self.bind("<Double-Button-1>", lambda event: self._handle_double_click())
         self.environs = {}
-        self.append_env_item(EnvItem(name="project directory"))
         self.append_env_item(EnvItem(name="javac"))
         self.append_env_item(EnvItem(name="javadoc"))
         self.append_env_item(EnvItem(name="jarsigner"))
@@ -25,7 +27,7 @@ class InfoList(Listbox):
 
     def _get_env_item_by_index(self, index):
         elem = self.get(index, index)
-        name = elem[0].split(":")[0].strip()
+        name = elem[0].split(EnvItem.separator())[0].strip()
         return self.get_env_item(name)
 
     def _handle_double_click(self):
@@ -33,8 +35,12 @@ class InfoList(Listbox):
         index = self.curselection()[0]
         env_item = self._get_env_item_by_index(index)
         self.popup_dialog = InfoListPopupDialog(self, env_item)
+        from utils import put_widget_at_center_of_screen
         self.master.wait_window(self.popup_dialog)
         self.popup_dialog = None
+
+    def append_item(self, name, value):
+        self.append_env_item(EnvItem(name=name, value=value))
 
     def append_env_item(self, item):
         self.environs[item.name] = item

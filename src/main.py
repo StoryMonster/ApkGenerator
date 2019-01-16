@@ -1,5 +1,6 @@
 from apk_generator import ApkGenerator
 import xml.etree.ElementTree as ET
+from utils import put_widget_at_center_of_screen
 import sys
 
 
@@ -23,6 +24,8 @@ def read_config_file(file_name):
         context["tools"]["zipalign"] = get_tool_path(tools, "zipalign")
         context["tools"]["dx"] = get_tool_path(tools, "dx")
         context["tools"]["android.jar"] = get_tool_path(tools, "android.jar")
+    context["project"] = {}
+    context["position"] = {}
     return context
 
 
