@@ -1,6 +1,6 @@
 from tkinter import Toplevel, Frame
-from named_entry import NamedEntry
-from ok_cancel_panel import OkCancelPanel
+from components.named_entry import NamedEntry
+from components.ok_cancel_panel import OkCancelPanel
 
 
 class ProjectInfoPanel(Frame):

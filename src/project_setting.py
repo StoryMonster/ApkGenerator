@@ -1,6 +1,6 @@
 from tkinter import Toplevel, Frame, Button, Label, messagebox
 from tkinter import TOP, X, LEFT, RIGHT
-from named_entry import NamedEntry
+from components.named_entry import NamedEntry
 import os.path
 
 def _read_project_name(project_directory):
