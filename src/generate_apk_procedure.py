@@ -1,4 +1,5 @@
 import subprocess
+import os.path
 from utils import get_all_java_files
 
 class GenerateApkProcedure(object):
@@ -41,6 +42,7 @@ class GenerateApkProcedure(object):
         self._zipalign_apk_file()
 
     def _execute_command(self, command):
+        self.logger.write_line(" ".join(command))
         proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = proc.communicate()[0], proc.communicate()[1]
         self.logger.write_line(out.decode("gbk"))
@@ -48,22 +50,23 @@ class GenerateApkProcedure(object):
 
     def _create_key_store(self):
         self.logger.write_line("Generating keystore file")
+        keystore = os.path.join(self.workspace, self.project_name+".keystore")
         command1 = [self.keytool,
                     "-genkeypair",
                     "-validity", "10000",
                     '-dname', f"CN={self.company}, OU={self.organize_unit}, O={self.organize}, L={self.location}, S={self.state}, C={self.country_code}",
-                    "-keystore", f'{self.workspace}/{self.project_name}.keystore',
+                    "-keystore", keystore,
                     "-storepass", "password",
                     "-keypass", "password",
-                    "-alias", f"{self.project_name}Key",
+                    "-alias", self.project_name + "Key",
                     "-keyalg", "RSA", "-v",]
         command2 = [self.keytool,
                     "-importkeystore",
-                    "-srckeystore", f'{self.workspace}/{self.project_name}.keystore',
-                    "-destkeystore", f'{self.workspace}/{self.project_name}.keystore',
+                    "-srckeystore", keystore,
+                    "-destkeystore", keystore,
                     "-deststoretype", "pkcs12"]
         self._execute_command(command1)
-        #subprocess.run(command2, capture_output=True))
+        self._execute_command(command2)
 
     def _create_R_file(self):
         self.logger.write_line("Generate R.java")
@@ -71,8 +74,8 @@ class GenerateApkProcedure(object):
                    "-v", "-f", "-m",
                    "-S", self.res_dir,
                    "-J", self.code_dir,
-                   "-M", f'{self.workspace}/AndroidManifest.xml',
-                   "-I", self.workspace]
+                   "-M", os.path.join(self.workspace, "AndroidManifest.xml"),
+                   "-I", self.android_jar]
         self._execute_command(command)
 
     def _compile_code(self):
@@ -80,16 +83,17 @@ class GenerateApkProcedure(object):
         java_files = get_all_java_files(self.code_dir)
         command = [self.javac, "-verbose",
                    "-d", self.obj_dir,
-                   "-classpath", f'{self.android_jar};{self.obj_dir}',
+                   "-classpath", f"{self.android_jar};{self.obj_dir}",
                    "-sourcepath", self.code_dir]
         command.extend(java_files)
         self._execute_command(command)
 
     def _create_dex_file(self):
         self.logger.write_line("Generate dex file")
+        dex_path = os.path.join(self.bin_dir, "classes.dex")
         command = [self.dx,
                    "--dex", "--verbose",
-                   f'--output={self.bin_dir}/{self.dex_file}',
+                   "--output=" + dex_path,
                    self.obj_dir, self.lib_dir]
         self._execute_command(command)
 
@@ -97,28 +101,28 @@ class GenerateApkProcedure(object):
         self.logger.write_line("Generate unsigned apk file")
         command = [self.aapt, "package",
                    "-v", "-f",
-                   "-M", f'{self.workspace}/AndroidManifest.xml',
+                   "-M", os.path.join(self.workspace, "AndroidManifest.xml"),
                    "-S", self.res_dir,
                    "-I", self.android_jar,
-                   "-F", f"{self.bin_dir}/unsigned.{self.apk_file}",
+                   "-F", os.path.join(self.bin_dir, "unsigned."+self.apk_file),
                    self.bin_dir]
         self._execute_command(command)
-        
+
     def _sign_apk_file(self):
         self.logger.write_line("sign apk file")
         command = [self.jarsigner, "-verbose",
-                   "-keystore", f"{self.workspace}/{self.project_name}.keystore",
+                   "-keystore", os.path.join(self.workspace, self.project_name+".keystore"),
                    "-storepass", "password",
                    "-keypass", "password",
-                   "-signedjar", f"{self.bin_dir}/signed.{self.apk_file}",
-                   f"{self.bin_dir}/unsigned.{self.apk_file}",
-                   f"{self.project_name}Key"]
+                   "-signedjar", os.path.join(self.bin_dir, "signed."+self.apk_file),
+                   os.path.join(self.bin_dir, "unsigned."+self.apk_file),
+                   self.project_name+"Key"]
         self._execute_command(command)
 
     def _zipalign_apk_file(self):
         self.logger.write_line("zipalign apk file")
         command = [self.zipalign,
                    "-v", "-f", "4",
-                   f"{self.bin_dir}/signed.{self.apk_file}",
-                   f"{self.bin_dir}/{self.apk_file}"]
+                   os.path.join(self.bin_dir, "signed."+self.apk_file),
+                   os.path.join(self.bin_dir, self.apk_file)]
         self._execute_command(command)

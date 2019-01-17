@@ -6,8 +6,7 @@ class EnvItem:
 
     @staticmethod
     def separator():
-        return "<====>"
+        return "==>"
 
     def __str__(self):
-        return f"{self.name:>20}  {EnvItem.separator()}  {self.value}"
-
+        return f"{self.name} {EnvItem.separator()} {self.value}"

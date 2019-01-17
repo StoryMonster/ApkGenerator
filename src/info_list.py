@@ -10,7 +10,9 @@ class InfoList(Listbox):
         y_scrollar_bar = Scrollbar(master, orient=VERTICAL)
         y_scrollar_bar.pack(side=RIGHT, fill=Y)
         tkfont = Font(family="Times New Roman",size=10, weight="normal")
-        super().__init__(master=master, yscrollcommand=y_scrollar_bar.set, bd=5, selectmode=SINGLE, exportselection=False, font=tkfont, **cwt)
+        super().__init__(master=master, yscrollcommand=y_scrollar_bar.set,
+                         bd=5, selectmode=SINGLE, exportselection=False, font=tkfont,
+                         width=60, **cwt)
         y_scrollar_bar.config(command=self.yview)
         self.bind("<Double-Button-1>", lambda event: self._handle_double_click())
         self.environs = {}

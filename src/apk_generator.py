@@ -5,6 +5,7 @@ from log_panel import LogPanel
 from control_panel import ControlPanel
 from info_panel import InfoPanel
 from generate_apk_procedure import GenerateApkProcedure
+from install_apk_procedure import InstallProcedure
 from project_setting import ProjectSettingWindow
 from utils import put_widget_at_center_of_screen
 import os
@@ -19,16 +20,17 @@ class ApkGenerator(Tk):
         self.project_setting_window = None
         self._add_menu_bar()
         self.info_panel = InfoPanel()
-        self.info_panel.pack(side=TOP, fill=BOTH, expand=1)
+        self.info_panel.pack(side=LEFT, fill=BOTH, expand=1)
         self.control_panel = ControlPanel()
-        self.control_panel.pack(side=TOP, fill=BOTH, expand=1)
+        self.control_panel.pack(side=LEFT, fill=BOTH, expand=1)
         self.control_panel.generate_button.bind("<Button-1>", lambda event : self._handle_generate_apk_file())
         self.control_panel.install_on_device_button.bind("<Button-1>", lambda event : self._handle_install_on_device())
         self.control_panel.install_on_emulator_button.bind("<Button-1>", lambda event : self._handle_install_on_emulator())
         self.control_panel.uninstall_button.bind("<Button-1>", lambda event : self._handle_uninstall_app())
         self.log_panel = LogPanel()
-        self.log_panel.pack(side=BOTTOM, fill=BOTH, expand=1)
+        self.log_panel.pack(side=RIGHT, fill=BOTH)
         self._apply_context()
+        self.geometry("900x600+100+100")
         self.update()
         put_widget_at_center_of_screen(self)
 
@@ -61,10 +63,12 @@ class ApkGenerator(Tk):
         proc.run()
 
     def _handle_install_on_device(self):
-        self.log_panel.write_line("pressed install on device")
+        proc = InstallProcedure(self.context, "device", self.log_panel)
+        proc.run()
 
     def _handle_install_on_emulator(self):
-        pass
+        proc = InstallProcedure(self.context, "emulator", self.log_panel)
+        proc.run()
 
     def _handle_uninstall_app(self):
         pass

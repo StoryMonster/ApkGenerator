@@ -13,7 +13,6 @@ class LogPanel(Frame):
         self.log_area = Text(self, bd=5, wrap="none",
                              font=Font(family="Times New Roman", size=12, weight="normal"),
                              xscrollcommand=log_x_scrollar_bar.set, yscrollcommand=log_y_scrollar_bar.set)
-        self.log_area.config(state="disable")
         self.log_area.pack(anchor="center", fill=BOTH, expand=1)
         log_x_scrollar_bar.config(command=self.log_area.xview)
         log_y_scrollar_bar.config(command=self.log_area.yview)
