@@ -2,7 +2,7 @@ from tkinter import Frame, Label, Entry, StringVar
 from tkinter import LEFT, RIGHT, X
 
 class NamedEntry(Frame):
-    def __init__(self, master, name, value):
+    def __init__(self, master, name, value, handle_value_change=None):
         super().__init__(master)
         self.master = master
         self._name = name
@@ -10,6 +10,8 @@ class NamedEntry(Frame):
         self.label = Label(self, text=self._name, bd=2, width=20)
         self.label.pack(side=LEFT, fill=X)
         self.entry = Entry(self, textvariable=self._value, bd=2, width=60)
+        if handle_value_change is not None:
+            self._value.trace("w", handle_value_change)
         self.entry.pack(side=RIGHT, fill=X)
 
     @property

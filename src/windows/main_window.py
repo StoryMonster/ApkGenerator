@@ -1,10 +1,6 @@
 from tkinter import Tk, messagebox, Menu, Frame, Scrollbar, Listbox, Button, Text
 from tkinter import LEFT, RIGHT, TOP, BOTTOM, BOTH, VERTICAL, Y, W, X, SINGLE, HORIZONTAL
-from tkinter.filedialog import askdirectory
 from tkinter.font import Font
-from windows.create_project_window import CreateProjectWindow
-from generate_apk_procedure import GenerateApkProcedure
-from install_apk_procedure import InstallProcedure
 from common.utils import put_widget_at_center_of_screen
 from common.env_item import EnvItem
 from components.info_list import InfoList
@@ -46,19 +42,6 @@ class LogPanel(Frame):
         self._see_at_end()
 
 
-class ControlPanel(Frame):
-    def __init__(self):
-        super().__init__(bd=3)
-        self.uninstall_button = Button(master=self, text="Uninstall", bd=5)
-        self.uninstall_button.pack(side=BOTTOM, fill=X)
-        self.install_on_emulator_button = Button(master=self, text="Install On Emulator", bd=5)
-        self.install_on_emulator_button.pack(side=BOTTOM, fill=X)
-        self.install_on_device_button = Button(master=self, text="Install On Device", bd=5)
-        self.install_on_device_button.pack(side=BOTTOM, fill=X)
-        self.generate_button = Button(master=self, text="GENERATE", bd=5)
-        self.generate_button.pack(side=BOTTOM, fill=X)
-
-
 class InfoPanel(Frame):
     def __init__(self):
         super().__init__()
@@ -70,53 +53,72 @@ class InfoPanel(Frame):
 
 
 class MainWindow(Tk):
-    def __init__(self, context, handle_generate_apk=None, handle_install_apk=None):
+    def __init__(self, context, handle_generate_apk=None,
+                                handle_install_apk=None,
+                                handle_create_project=None,
+                                handle_clean_project=None):
         super().__init__()
         self.context = context
         self.handle_generate_apk = handle_generate_apk
         self.handle_install_apk = handle_install_apk
+        self.handle_create_project = handle_create_project
+        self.handle_clean_project = handle_clean_project
         self.title("ApkGenerator")
         self.resizable(False, False)
         self.project_setting_window = None
         self._add_menu_bar()
         self.info_panel = InfoPanel()
         self.info_panel.pack(side=LEFT, fill=BOTH, expand=1)
-        self.control_panel = ControlPanel()
-        self.control_panel.pack(side=LEFT, fill=BOTH, expand=1)
-        self.control_panel.generate_button.bind("<Button-1>", lambda event : self._handle_generate_apk_file())
-        self.control_panel.install_on_device_button.bind("<Button-1>", lambda event : self._handle_install_on_device())
-        self.control_panel.install_on_emulator_button.bind("<Button-1>", lambda event : self._handle_install_on_emulator())
-        self.control_panel.uninstall_button.bind("<Button-1>", lambda event : self._handle_uninstall_app())
         self.log_panel = LogPanel()
         self.log_panel.pack(side=RIGHT, fill=BOTH)
-        self._apply_context()
+        self.update_info_list()
         self.geometry("900x600+100+100")
         self.update()
         put_widget_at_center_of_screen(self)
 
     def _add_menu_bar(self):
         menubar = Menu(self)
-        menubar.add_command(label="Open project", command=self._handle_create_project)
-        menubar.add_command(label="Edit environment", command=None)
+        file_menu = Menu(menubar, tearoff=0)
+        file_menu.add_command(label="Create project", command=self.handle_create_project)
+        file_menu.add_command(label="Open project", command=None)
+        file_menu.add_separator()
+        file_menu.add_command(label="Save", command=None)
+        file_menu.add_command(label="Exit", command=None)
+
+        project_menu = Menu(menubar, tearoff=0)
+        project_menu.add_command(label="Build", command=self._handle_generate_apk_file)
+        project_menu.add_command(label="Clear", command=self._handle_clean_project)
+        project_menu.add_command(label="Install on device", command=self._handle_install_on_device)
+        project_menu.add_command(label="Uninstall", command=self._handle_uninstall_app)
+
+        emulator_menu = Menu(menubar, tearoff=0)
+        emulator_menu.add_command(label="Power on/off emulator", command=None)
+        emulator_menu.add_command(label="Install on emulator", command=None)
+        emulator_menu.add_command(label="Uninstall from emulator", command=None)
+        emulator_menu.add_command(label="list avalible emulators", command=None)
+
+        setting_menu = Menu(menubar, tearoff=0)
+        setting_menu.add_command(label="setting1", command=None)
+        setting_menu.add_command(label="setting2", command=None)
+        setting_menu.add_command(label="setting3", command=None)
+        setting_menu.add_command(label="setting4", command=None)
+
+        menubar.add_cascade(label="File", menu=file_menu)
+        menubar.add_cascade(label="Project", menu=project_menu)
+        menubar.add_cascade(label="Emulator", menu=emulator_menu)
+        menubar.add_cascade(label="Setting", menu=setting_menu)
         self.config(menu=menubar)
 
-    def _handle_create_project(self):
-        if self.project_setting_window is not None: return
-        self.project_setting_window = CreateProjectWindow(self.context, os.path.abspath(askdirectory()))
-        put_widget_at_center_of_screen(self.project_setting_window)
-        self.wait_window(self.project_setting_window)
-        self.project_setting_window = None
-        for key in self.context["project"]:
-            self.info_panel.info_list.append_item(key, self.context["project"][key])
-        for key in self.context["position"]:
-            self.info_panel.info_list.append_item(key, self.context["position"][key])
-
-    def _apply_context(self):
-        for tool_name in self.context["tools"]:
-            if os.path.isfile(str(self.context["tools"][tool_name])):
-                env_item = self.info_panel.get_env_item(tool_name)
-                if env_item is not None:
-                    self.info_panel.info_list.change_env_item_value(tool_name, self.context["tools"][tool_name])
+    def update_info_list(self):
+        if "project" in self.context:
+            for key in self.context["project"]:
+                self.info_panel.info_list.append_item(key, self.context["project"][key])
+        if "position" in self.context:
+            for key in self.context["position"]:
+                self.info_panel.info_list.append_item(key, self.context["position"][key])
+        if "tools" in self.context:
+            for key in self.context["tools"]:
+                self.info_panel.info_list.append_item(key, self.context["tools"][key])
 
     def _handle_generate_apk_file(self):
         if self.handle_generate_apk is not None:
@@ -131,4 +133,7 @@ class MainWindow(Tk):
             self.handle_install_apk(target="emulator", logger=self.log_panel)
 
     def _handle_uninstall_app(self):
-        pass
+        self.log_panel.write_line("Handle uninstall app")
+
+    def _handle_clean_project(self):
+        self.handle_clean_project(logger=self.log_panel)

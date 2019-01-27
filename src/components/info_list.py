@@ -49,6 +49,9 @@ class InfoList(Listbox):
         self.append_env_item(EnvItem(name=name, value=value))
 
     def append_env_item(self, item):
+        if item.name in self.environs:
+            self.change_env_item_value(item.name, item.value)
+            return
         self.environs[item.name] = item
         self.insert("end", item)
 

@@ -27,3 +27,28 @@ def get_all_java_files(path):
                 dirs.put(filepath)
     return files
 
+def get_R_java_file(path):
+    dirs = queue.Queue()
+    dirs.put(path)
+    while not dirs.empty():
+        dir = dirs.get()
+        cwd_files = os.listdir(dir)
+        for file in cwd_files:
+            filepath = os.path.join(dir, file)
+            if file == "R.java":
+                 return filepath
+            elif os.path.isdir(filepath):
+                dirs.put(filepath)
+    return None
+
+def remove_all_under_folder(folder, depth=0):
+    files = os.listdir(folder)
+    for file in files:
+        filepath = os.path.join(folder, file)
+        if os.path.isfile(filepath):
+            os.remove(filepath)
+        elif os.path.isdir(filepath):
+            remove_all_under_folder(filepath, depth+1)
+    if depth != 0:
+        os.rmdir(folder)
+
