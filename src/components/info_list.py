@@ -1,8 +1,9 @@
-from tkinter import Listbox, Scrollbar, messagebox
-from tkinter import VERTICAL, RIGHT, Y, W, X, SINGLE, TOP, BOTH, DISABLED, NORMAL
+from tkinter import Listbox, Scrollbar
+from tkinter import VERTICAL, RIGHT, Y, W, X, SINGLE
 from tkinter.font import Font
-from env_item import EnvItem
-from info_list_popup_dialog import InfoListPopupDialog
+from common.env_item import EnvItem
+from common.utils import put_widget_at_center_of_screen
+from components.value_change_popup import ValueChangePopup
 
 
 class InfoList(Listbox):
@@ -36,9 +37,12 @@ class InfoList(Listbox):
         if self.popup_dialog is not None: return
         index = self.curselection()[0]
         env_item = self._get_env_item_by_index(index)
-        self.popup_dialog = InfoListPopupDialog(self, env_item)
-        from utils import put_widget_at_center_of_screen
+        self.popup_dialog = ValueChangePopup(self, env_item)
+        put_widget_at_center_of_screen(self.popup_dialog)
         self.master.wait_window(self.popup_dialog)
+        if self.popup_dialog.is_value_changed:
+            print(env_item.value)
+            self.change_env_item_value(env_item.name, self.popup_dialog.get_changed_value())
         self.popup_dialog = None
 
     def append_item(self, name, value):

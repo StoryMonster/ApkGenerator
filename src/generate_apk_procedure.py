@@ -1,9 +1,11 @@
 import subprocess
 import os.path
-from utils import get_all_java_files
+from common.utils import get_all_java_files
+from threading import Thread
 
-class GenerateApkProcedure(object):
+class GenerateApkProcedure(Thread):
     def __init__(self, context, logger):
+        super().__init__()
         self.context = context
         self.logger = logger
         self.company = self.context["position"]["company"]
@@ -44,9 +46,16 @@ class GenerateApkProcedure(object):
     def _execute_command(self, command):
         self.logger.write_line(" ".join(command))
         proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = proc.communicate()[0], proc.communicate()[1]
-        self.logger.write_line(out.decode("gbk"))
-        self.logger.write_line(err.decode("gbk"))
+        result = proc.communicate()
+        self.logger.write_line(result[0].decode("gbk"))
+        self.logger.write_line(result[1].decode("gbk"))
+
+    def _execute_command_with_input(self, command, input):
+        self.logger.write_line(" ".join(command))
+        proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = proc.communicate(input=input.encode("gbk"), timeout=3)
+        self.logger.write_line(result[0].decode("gbk"))
+        self.logger.write_line(result[1].decode("gbk"))
 
     def _create_key_store(self):
         self.logger.write_line("Generating keystore file")
@@ -66,7 +75,7 @@ class GenerateApkProcedure(object):
                     "-destkeystore", keystore,
                     "-deststoretype", "pkcs12"]
         self._execute_command(command1)
-        self._execute_command(command2)
+        self._execute_command_with_input(command2, "password")
 
     def _create_R_file(self):
         self.logger.write_line("Generate R.java")

@@ -26,3 +26,4 @@ def get_all_java_files(path):
             elif os.path.isdir(filepath):
                 dirs.put(filepath)
     return files
+

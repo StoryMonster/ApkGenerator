@@ -44,7 +44,7 @@ class ProjectPanel(Frame):
         self.lib_directory.pack()
         self.docs_directory = NamedEntry(master=self, name="Docs directory", value=os.path.join(self.workspace, "docs"))
         self.docs_directory.pack()
-        self.dex_file = NamedEntry(master=self, name="Dex file name", value=self.default_project_name + ".dex")
+        self.dex_file = NamedEntry(master=self, name="Dex file name", value="classes.dex")
         self.dex_file.pack()
         self.apk_file = NamedEntry(master=self, name="Apk file name", value=self.default_project_name + ".apk")
         self.apk_file.pack()
@@ -60,7 +60,7 @@ class ControlPanel(Frame):
         self.cancel_button.pack(side=RIGHT)
         Label(self).pack(side=RIGHT, fill=X)
 
-class ProjectSettingWindow(Toplevel):
+class CreateProjectWindow(Toplevel):
     def __init__(self, context, project_directory):
         super().__init__()
         self.resizable(False, False)

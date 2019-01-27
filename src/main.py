@@ -1,6 +1,5 @@
 from apk_generator import ApkGenerator
 import xml.etree.ElementTree as ET
-from utils import put_widget_at_center_of_screen
 import sys
 
 
@@ -32,4 +31,4 @@ def read_config_file(file_name):
 if __name__ == "__main__":
     context = read_config_file(sys.argv[1])
     generator = ApkGenerator(context)
-    generator.mainloop()
+    generator.main_window.mainloop()
