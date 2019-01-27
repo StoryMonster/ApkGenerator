@@ -1,6 +1,6 @@
 from windows.main_window import MainWindow
-from generate_apk_procedure import GenerateApkProcedure
-from install_apk_procedure import InstallProcedure
+from procedures.generate_apk_procedure import GenerateApkProcedure
+from procedures.install_apk_procedure import InstallProcedure
 
 
 class ApkGenerator(object):
