@@ -56,13 +56,15 @@ class MainWindow(Tk):
     def __init__(self, context, handle_generate_apk=None,
                                 handle_install_apk=None,
                                 handle_create_project=None,
-                                handle_clean_project=None):
+                                handle_clean_project=None,
+                                handle_power_on_emulator=None):
         super().__init__()
         self.context = context
         self.handle_generate_apk = handle_generate_apk
         self.handle_install_apk = handle_install_apk
         self.handle_create_project = handle_create_project
         self.handle_clean_project = handle_clean_project
+        self.handle_power_on_emulator = handle_power_on_emulator
         self.title("ApkGenerator")
         self.resizable(False, False)
         self.project_setting_window = None
@@ -92,7 +94,7 @@ class MainWindow(Tk):
         project_menu.add_command(label="Uninstall", command=self._handle_uninstall_app)
 
         emulator_menu = Menu(menubar, tearoff=0)
-        emulator_menu.add_command(label="Power on/off emulator", command=None)
+        emulator_menu.add_command(label="Power on/off emulator", command=self._handle_power_on_emulator)
         emulator_menu.add_command(label="Install on emulator", command=None)
         emulator_menu.add_command(label="Uninstall from emulator", command=None)
         emulator_menu.add_command(label="list avalible emulators", command=None)
@@ -137,3 +139,6 @@ class MainWindow(Tk):
 
     def _handle_clean_project(self):
         self.handle_clean_project(logger=self.log_panel)
+
+    def _handle_power_on_emulator(self):
+        self.handle_power_on_emulator(logger=self.log_panel)

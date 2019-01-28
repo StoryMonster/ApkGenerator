@@ -3,6 +3,7 @@ from procedures.generate_apk_procedure import GenerateApkProcedure
 from procedures.install_apk_procedure import InstallProcedure
 from procedures.create_project_procedure import CreateProjectProcedure
 from procedures.clean_project_procedure import CleanProjectProcedure
+from procedures.power_on_emulator_procedure import PowerOnEmulatorProcedure
 
 
 class ApkGenerator(object):
@@ -12,7 +13,8 @@ class ApkGenerator(object):
         self.main_window = MainWindow(self.context, handle_generate_apk=self.handle_generate_apk,
                                                     handle_install_apk=self.handle_install_apk,
                                                     handle_create_project=self.handle_create_project,
-                                                    handle_clean_project=self.handle_clean_project)
+                                                    handle_clean_project=self.handle_clean_project,
+                                                    handle_power_on_emulator=self.handle_power_on_emulator)
 
     def handle_generate_apk(self, logger):
         proc = GenerateApkProcedure(self.context, logger)
@@ -29,4 +31,9 @@ class ApkGenerator(object):
 
     def handle_clean_project(self, logger):
         proc = CleanProjectProcedure(self.context, logger)
+        proc.run()
+
+    def handle_power_on_emulator(self, logger):
+        self.context["tools"]["emulator"] = "C:/Program Files/AndroidSDK/tools/emulator.exe"
+        proc = PowerOnEmulatorProcedure(avd="MyPhone", adb=self.context["tools"]["emulator"], logger=logger)
         proc.run()
