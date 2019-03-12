@@ -11,4 +11,12 @@
     <dx>C:\Program Files\AndroidSDK\build-tools\28.0.3\dx.bat</dx>
     <android.jar>C:\Program Files\AndroidSDK\platforms\android-28\android.jar</android.jar>
   </tools>
+  <developer>
+    <company>Nokia Communication System and Technicol</company>
+    <organize>5G</organize>
+    <organizeUnit>ECE</organizeUnit>
+    <location>No.567, Xincheng Road, Binjiang district, Hangzhou</location>
+    <state>Zhejiang</state>
+    <countryCode>CN</countryCode>
+  </developer>
 </ApkGenerator>

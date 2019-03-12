@@ -15,6 +15,10 @@ class ApkGenerator(object):
                                                     handle_create_project=self.handle_create_project,
                                                     handle_clean_project=self.handle_clean_project,
                                                     handle_power_on_emulator=self.handle_power_on_emulator)
+        self.main_window.show_configuration()
+
+    def run(self):
+        self.main_window.mainloop()
 
     def handle_generate_apk(self, logger):
         proc = GenerateApkProcedure(self.context, logger)

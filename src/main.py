@@ -3,32 +3,50 @@ import xml.etree.ElementTree as ET
 import sys
 
 
-def get_tool_path(tools, tool_name):
-    tool = tools.find(tool_name)
-    return tool.text if tool is not None else ""
+def read_item(parent, item_name):
+    item = parent.find(item_name)
+    return item.text if item is not None else ""
+
+
+def get_developer_information(root):
+    developer = root.find("developer")
+    result = {}
+    if developer is None: return result
+    result["company"] = read_item(developer, "company")
+    result["organize"] = read_item(developer, "organize")
+    result["organizeUnit"] = read_item(developer, "organizeUnit")
+    result["location"] = read_item(developer, "location")
+    result["state"] = read_item(developer, "state")
+    result["countryCode"] = read_item(developer, "countryCode")
+    return result
+
+
+def get_tools_information(root):
+    tools = root.find("tools")
+    result = {}
+    if tools is None: return result
+    result["javac"] = read_item(tools, "javac")
+    result["keytool"] = read_item(tools, "keytool")
+    result["jarsigner"] = read_item(tools, "jarsigner")
+    result["javadoc"] = read_item(tools, "javadoc")
+    result["adb"] = read_item(tools, "adb")
+    result["aapt"] = read_item(tools, "aapt")
+    result["zipalign"] = read_item(tools, "zipalign")
+    result["dx"] = read_item(tools, "dx")
+    result["android.jar"] = read_item(tools, "android.jar")
+    return result
+
 
 def read_config_file(file_name):
     context = {}
     tree = ET.parse(file_name)
     root = tree.getroot()
-    tools = root.find("tools")
-    if tools is not None:
-        context["tools"] = {}
-        context["tools"]["javac"] = get_tool_path(tools, "javac")
-        context["tools"]["keytool"] = get_tool_path(tools, "keytool")
-        context["tools"]["jarsigner"] = get_tool_path(tools, "jarsigner")
-        context["tools"]["javadoc"] = get_tool_path(tools, "javadoc")
-        context["tools"]["adb"] = get_tool_path(tools, "adb")
-        context["tools"]["aapt"] = get_tool_path(tools, "aapt")
-        context["tools"]["zipalign"] = get_tool_path(tools, "zipalign")
-        context["tools"]["dx"] = get_tool_path(tools, "dx")
-        context["tools"]["android.jar"] = get_tool_path(tools, "android.jar")
+    context["tools"] = get_tools_information(root)
     context["project"] = {}
-    context["position"] = {}
+    context["developer"] = get_developer_information(root)
     return context
 
 
 if __name__ == "__main__":
     context = read_config_file(sys.argv[1])
-    generator = ApkGenerator(context)
-    generator.main_window.mainloop()
+    ApkGenerator(context).run()

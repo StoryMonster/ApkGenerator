@@ -2,9 +2,6 @@ from tkinter import Tk, messagebox, Menu, Frame, Scrollbar, Listbox, Button, Tex
 from tkinter import LEFT, RIGHT, TOP, BOTTOM, BOTH, VERTICAL, Y, W, X, SINGLE, HORIZONTAL
 from tkinter.font import Font
 from common.utils import put_widget_at_center_of_screen
-from common.env_item import EnvItem
-from components.info_list import InfoList
-import os
 
 
 class LogPanel(Frame):
@@ -42,16 +39,6 @@ class LogPanel(Frame):
         self._see_at_end()
 
 
-class InfoPanel(Frame):
-    def __init__(self):
-        super().__init__()
-        self.info_list = InfoList(self)
-        self.info_list.pack(side=TOP, fill=BOTH, expand=1)
-
-    def get_env_item(self, name):
-        return self.info_list.get_env_item(name)
-
-
 class MainWindow(Tk):
     def __init__(self, context, handle_generate_apk=None,
                                 handle_install_apk=None,
@@ -66,41 +53,41 @@ class MainWindow(Tk):
         self.handle_clean_project = handle_clean_project
         self.handle_power_on_emulator = handle_power_on_emulator
         self.title("ApkGenerator")
-        self.resizable(False, False)
         self.project_setting_window = None
         self._add_menu_bar()
-        self.info_panel = InfoPanel()
-        self.info_panel.pack(side=LEFT, fill=BOTH, expand=1)
         self.log_panel = LogPanel()
-        self.log_panel.pack(side=RIGHT, fill=BOTH)
-        self.update_info_list()
+        self.log_panel.pack(side=LEFT, fill=BOTH, expand=1)
         self.geometry("900x600+100+100")
         self.update()
         put_widget_at_center_of_screen(self)
 
+    def show_configuration(self):
+        for key in self.context["tools"]:
+            self.log_panel.write_line(f"{key}:{self.context['tools'][key]}")
+
     def _add_menu_bar(self):
         menubar = Menu(self)
         file_menu = Menu(menubar, tearoff=0)
-        file_menu.add_command(label="Create project", command=self.handle_create_project)
-        file_menu.add_command(label="Open project", command=None)
+        file_menu.add_command(label="create project", command=self.handle_create_project)
+        file_menu.add_command(label="open project", command=None)
         file_menu.add_separator()
-        file_menu.add_command(label="Save", command=None)
-        file_menu.add_command(label="Exit", command=None)
+        file_menu.add_command(label="save", command=None)
+        file_menu.add_command(label="exit", command=None)
 
         project_menu = Menu(menubar, tearoff=0)
-        project_menu.add_command(label="Build", command=self._handle_generate_apk_file)
-        project_menu.add_command(label="Clear", command=self._handle_clean_project)
-        project_menu.add_command(label="Install on device", command=self._handle_install_on_device)
-        project_menu.add_command(label="Uninstall", command=self._handle_uninstall_app)
+        project_menu.add_command(label="build", command=self._handle_generate_apk_file)
+        project_menu.add_command(label="clear", command=self._handle_clean_project)
+        project_menu.add_command(label="install on device", command=self._handle_install_on_device)
+        project_menu.add_command(label="uninstall", command=self._handle_uninstall_app)
 
         emulator_menu = Menu(menubar, tearoff=0)
-        emulator_menu.add_command(label="Power on/off emulator", command=self._handle_power_on_emulator)
-        emulator_menu.add_command(label="Install on emulator", command=None)
-        emulator_menu.add_command(label="Uninstall from emulator", command=None)
+        emulator_menu.add_command(label="power on/off emulator", command=self._handle_power_on_emulator)
+        emulator_menu.add_command(label="install on emulator", command=None)
+        emulator_menu.add_command(label="uninstall from emulator", command=None)
         emulator_menu.add_command(label="list avalible emulators", command=None)
 
         setting_menu = Menu(menubar, tearoff=0)
-        setting_menu.add_command(label="setting1", command=None)
+        setting_menu.add_command(label="font", command=None)
         setting_menu.add_command(label="setting2", command=None)
         setting_menu.add_command(label="setting3", command=None)
         setting_menu.add_command(label="setting4", command=None)
@@ -110,17 +97,6 @@ class MainWindow(Tk):
         menubar.add_cascade(label="Emulator", menu=emulator_menu)
         menubar.add_cascade(label="Setting", menu=setting_menu)
         self.config(menu=menubar)
-
-    def update_info_list(self):
-        if "project" in self.context:
-            for key in self.context["project"]:
-                self.info_panel.info_list.append_item(key, self.context["project"][key])
-        if "position" in self.context:
-            for key in self.context["position"]:
-                self.info_panel.info_list.append_item(key, self.context["position"][key])
-        if "tools" in self.context:
-            for key in self.context["tools"]:
-                self.info_panel.info_list.append_item(key, self.context["tools"][key])
 
     def _handle_generate_apk_file(self):
         if self.handle_generate_apk is not None:

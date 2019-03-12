@@ -3,20 +3,20 @@ from tkinter import TOP, X, LEFT, RIGHT
 from components.named_entry import NamedEntry
 import os.path
 
-class OrganizationPanel(Frame):
+class DeveloperInfoPanel(Frame):
     def __init__(self, master):
         super().__init__(master)
-        self.company = NamedEntry(master=self, name="Company name", value="")
+        self.company = NamedEntry(master=self, name="Company name", value=master.context["developer"]["company"])
         self.company.pack(side=TOP)
-        self.organize_unit = NamedEntry(master=self, name="Organizational unit", value="")
-        self.organize_unit.pack(side=TOP)
-        self.organize = NamedEntry(master=self, name="Organization", value="")
+        self.organize = NamedEntry(master=self, name="Organization", value=master.context["developer"]["organize"])
         self.organize.pack(side=TOP)
-        self.location = NamedEntry(master=self, name="Location", value="")
+        self.organize_unit = NamedEntry(master=self, name="Organizational unit", value=master.context["developer"]["organizeUnit"])
+        self.organize_unit.pack(side=TOP)
+        self.location = NamedEntry(master=self, name="Location", value=master.context["developer"]["location"])
         self.location.pack(side=TOP)
-        self.state = NamedEntry(master=self, name="State", value="")
+        self.state = NamedEntry(master=self, name="State", value=master.context["developer"]["state"])
         self.state.pack(side=TOP)
-        self.country_code = NamedEntry(master=self, name="Country code", value="")
+        self.country_code = NamedEntry(master=self, name="Country code", value=master.context["developer"]["countryCode"])
         self.country_code.pack(side=TOP)
 
 
@@ -76,14 +76,14 @@ class CreateProjectWindow(Toplevel):
         self.project_parent_directory = project_parent_directory
         self.context = context
         self.title("Creating android project")
-        self._deploy_orgnization_panel()
+        self._deploy_developer_info_panel()
         self._deploy_project_panel()
         self._deploy_control_panel()
         self.update()
 
-    def _deploy_orgnization_panel(self):
-        self.organization_panel = OrganizationPanel(self)
-        self.organization_panel.pack()
+    def _deploy_developer_info_panel(self):
+        self.developer_panel = DeveloperInfoPanel(self)
+        self.developer_panel.pack()
 
     def _deploy_project_panel(self):
         self.project_panel = ProjectPanel(self, self.project_parent_directory)
@@ -94,13 +94,12 @@ class CreateProjectWindow(Toplevel):
         self.control_panel.pack()
 
     def _handle_ok(self):
-        self.context["position"] = {}
-        self.context["position"]["company"] = self.organization_panel.company.value
-        self.context["position"]["organize"] = self.organization_panel.organize.value
-        self.context["position"]["organize unit"] = self.organization_panel.organize_unit.value
-        self.context["position"]["location"] = self.organization_panel.location.value
-        self.context["position"]["state"] = self.organization_panel.state.value
-        self.context["position"]["country code"] = self.organization_panel.country_code.value
+        self.context["developer"]["company"] = self.developer_panel.company.value
+        self.context["developer"]["organize"] = self.developer_panel.organize.value
+        self.context["developer"]["organizeUnit"] = self.developer_panel.organize_unit.value
+        self.context["developer"]["location"] = self.developer_panel.location.value
+        self.context["developer"]["state"] = self.developer_panel.state.value
+        self.context["developer"]["countryCode"] = self.developer_panel.country_code.value
         self.context["project"]["project name"] = self.project_panel.project_name.value
         self.context["project"]["project directory"] = self.project_panel.workspace.value
         self.context["project"]["res directory"] = self.project_panel.resource_directory.value

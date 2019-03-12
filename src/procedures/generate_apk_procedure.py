@@ -8,12 +8,12 @@ class GenerateApkProcedure(Thread):
         super().__init__()
         self.context = context
         self.logger = logger
-        self.company = self.context["position"]["company"]
-        self.organize = self.context["position"]["organize"]
-        self.organize_unit = self.context["position"]["organize unit"]
-        self.location = self.context["position"]["location"]
-        self.state = self.context["position"]["state"]
-        self.country_code = self.context["position"]["country code"]
+        self.company = self.context["developer"]["company"]
+        self.organize = self.context["developer"]["organize"]
+        self.organize_unit = self.context["developer"]["organizeUnit"]
+        self.location = self.context["developer"]["location"]
+        self.state = self.context["developer"]["state"]
+        self.country_code = self.context["developer"]["countryCode"]
         self.project_name = self.context["project"]["project name"]
         self.res_dir = self.context["project"]["res directory"]
         self.code_dir = self.context["project"]["code directory"]
