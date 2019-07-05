@@ -4,6 +4,7 @@ from procedures.install_apk_procedure import InstallProcedure
 from procedures.create_project_procedure import CreateProjectProcedure
 from procedures.clean_project_procedure import CleanProjectProcedure
 from procedures.power_on_emulator_procedure import PowerOnEmulatorProcedure
+from procedures.open_project_procedure import OpenProjectProcedure
 
 
 class ApkGenerator(object):
@@ -14,7 +15,8 @@ class ApkGenerator(object):
                                                     handle_install_apk=self.handle_install_apk,
                                                     handle_create_project=self.handle_create_project,
                                                     handle_clean_project=self.handle_clean_project,
-                                                    handle_power_on_emulator=self.handle_power_on_emulator)
+                                                    handle_power_on_emulator=self.handle_power_on_emulator,
+                                                    handle_open_project = self.handle_open_project)
         self.main_window.show_configuration()
 
     def run(self):
@@ -41,3 +43,7 @@ class ApkGenerator(object):
         self.context["tools"]["emulator"] = "C:/Program Files/AndroidSDK/tools/emulator.exe"
         proc = PowerOnEmulatorProcedure(avd="MyPhone", adb=self.context["tools"]["emulator"], logger=logger)
         proc.run()
+
+    def handle_open_project(self):
+        OpenProjectProcedure(context=self.context).run()
+        self.main_window.update_info_list()

@@ -44,7 +44,8 @@ class MainWindow(Tk):
                                 handle_install_apk=None,
                                 handle_create_project=None,
                                 handle_clean_project=None,
-                                handle_power_on_emulator=None):
+                                handle_power_on_emulator=None,
+                                handle_open_project=None):
         super().__init__()
         self.context = context
         self.handle_generate_apk = handle_generate_apk
@@ -52,6 +53,7 @@ class MainWindow(Tk):
         self.handle_create_project = handle_create_project
         self.handle_clean_project = handle_clean_project
         self.handle_power_on_emulator = handle_power_on_emulator
+        self.handle_open_project = handle_open_project
         self.title("ApkGenerator")
         self.project_setting_window = None
         self._add_menu_bar()
@@ -69,7 +71,7 @@ class MainWindow(Tk):
         menubar = Menu(self)
         file_menu = Menu(menubar, tearoff=0)
         file_menu.add_command(label="create project", command=self.handle_create_project)
-        file_menu.add_command(label="open project", command=None)
+        file_menu.add_command(label="open project", command=self.handle_open_project)
         file_menu.add_separator()
         file_menu.add_command(label="save", command=None)
         file_menu.add_command(label="exit", command=None)
