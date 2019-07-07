@@ -1,0 +1,2 @@
+
+PROJECT_CONFIGURATION_FILENAME = "project.xml"

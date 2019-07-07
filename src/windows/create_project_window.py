@@ -1,7 +1,10 @@
 from tkinter import Toplevel, Frame, Button, Label, messagebox
 from tkinter import TOP, X, LEFT, RIGHT
 from components.named_entry import NamedEntry
+from common.defs import PROJECT_CONFIGURATION_FILENAME
 import os.path
+from common.xml.xml_struct import XMLStruct
+from common.xml.xml_writer import XMLWriter
 
 class DeveloperInfoPanel(Frame):
     def __init__(self, master):
@@ -93,6 +96,25 @@ class CreateProjectWindow(Toplevel):
         self.control_panel = ControlPanel(self, self._handle_ok, self._handle_cancel)
         self.control_panel.pack()
 
+    def _recordProjectInformation(self):
+        root = XMLStruct(self.context["project"]["project name"])
+        root.addTextSubElement("res", self.context["project"]["res directory"])
+        root.addTextSubElement("src", self.context["project"]["code directory"])
+        root.addTextSubElement("obj", self.context["project"]["obj directory"])
+        root.addTextSubElement("bin", self.context["project"]["bin directory"])
+        root.addTextSubElement("docs", self.context["project"]["docs directory"])
+        root.addTextSubElement("lib", self.context["project"]["lib directory"])
+        root.addTextSubElement("apk", self.context["project"]["apk file"])
+        root.addTextSubElement("company", self.context["developer"]["apk file"])
+        root.addTextSubElement("organize", self.context["developer"]["apk file"])
+        root.addTextSubElement("organize_unit", self.context["developer"]["apk file"])
+        root.addTextSubElement("location", self.context["developer"]["apk file"])
+        root.addTextSubElement("state", self.context["developer"]["apk file"])
+        root.addTextSubElement("country_code", self.context["developer"]["apk file"])
+        project_config_file = os.path.join(self.context["developer"]["project directory"], PROJECT_CONFIGURATION_FILENAME)
+        XMLWriter(project_config_file).write(root)
+
+
     def _handle_ok(self):
         self.context["developer"]["company"] = self.developer_panel.company.value
         self.context["developer"]["organize"] = self.developer_panel.organize.value
@@ -110,6 +132,7 @@ class CreateProjectWindow(Toplevel):
         self.context["project"]["lib directory"] = self.project_panel.lib_directory.value
         self.context["project"]["dex file"] = self.project_panel.dex_file.value
         self.context["project"]["apk file"] = self.project_panel.apk_file.value
+        self._recordProjectInformation()
         self.destroy()
 
     def _handle_cancel(self):
